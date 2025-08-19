@@ -31,6 +31,16 @@ jobs:
           task copy:assets
           mkdir -p Release
 
+      - name: Verify bundle (macOS)
+        run: |
+          echo "--- manifest.json ---"
+          cat dev.flowingspdg.buttontester.sdPlugin/manifest.json
+          echo "--- bundle listing ---"
+          ls -la dev.flowingspdg.buttontester.sdPlugin
+          echo "--- checks ---"
+          grep -q '"CodePath"' dev.flowingspdg.buttontester.sdPlugin/manifest.json
+          test -f dev.flowingspdg.buttontester.sdPlugin/button_tester || (echo "missing mac binary" && exit 1)
+
       - name: StreamDeck Distribution Tool (macOS)
         uses: AdamCarballo/streamdeck-distribution-tool@v1
         with:
@@ -70,6 +80,17 @@ jobs:
           task build:windows
           task copy:assets
           mkdir -p Release
+
+      - name: Verify bundle (Windows)
+        shell: bash
+        run: |
+          echo "--- manifest.json ---"
+          cat dev.flowingspdg.buttontester.sdPlugin/manifest.json
+          echo "--- bundle listing ---"
+          ls -la dev.flowingspdg.buttontester.sdPlugin
+          echo "--- checks ---"
+          grep -q '"CodePath"' dev.flowingspdg.buttontester.sdPlugin/manifest.json
+          test -f dev.flowingspdg.buttontester.sdPlugin/button_tester.exe || (echo "missing windows binary" && exit 1)
 
       - name: StreamDeck Distribution Tool (Windows)
         uses: AdamCarballo/streamdeck-distribution-tool@v1
