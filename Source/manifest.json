@@ -1,0 +1,37 @@
+{
+  "Actions": [
+    {
+      "Name": "Button Tester",
+      "States": [
+        {
+          "Image": "images/icon",
+          "TitleAlignment": "middle",
+          "FontSize": "12"
+        }
+      ],
+      "PropertyInspectorPath": "inspector/pi.html",
+      "SupportedInMultiActions": true,
+      "Tooltip": "Logs key events to the Stream Deck log",
+      "UUID": "dev.flowingspdg.buttontester.test",
+      "Icon": "images/icon"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "FlowingSPDG",
+  "CodePath": "button_tester.exe",
+  "CodePathMac": "button_tester",
+  "Description": "Simple button tester that logs key events.",
+  "Name": "Button Tester [FlowingSPDG]",
+  "Icon": "images/icon",
+  "URL": "https://github.com/FlowingSPDG/streamdeckbuttontester",
+  "Version": "0.1.0",
+  "OS": [
+    { "Platform": "mac", "MinimumVersion": "10.11" },
+    { "Platform": "windows", "MinimumVersion": "10" }
+  ],
+  "Software": { "MinimumVersion": "6.4" },
+  "Category": "Button Tester [FlowingSPDG]",
+  "CategoryIcon": "images/icon"
+}
+
+

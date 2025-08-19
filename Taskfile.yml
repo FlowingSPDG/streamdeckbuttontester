@@ -1,0 +1,53 @@
+version: '3'
+
+vars:
+  APPNAME: dev.flowingspdg.buttontester.sdPlugin
+  BINARY: button_tester
+
+tasks:
+  prepare:
+    cmds:
+      - rm -rf {{.APPNAME}}
+      - mkdir -p {{.APPNAME}}
+
+  build:mac:
+    dir: Source/code/cmd
+    cmds:
+      - GOOS=darwin GOARCH=amd64 go build -o ../../../{{.APPNAME}}/{{.BINARY}} .
+
+  build:windows:
+    dir: Source/code/cmd
+    cmds:
+      - GOOS=windows GOARCH=amd64 go build -o ../../../{{.APPNAME}}/{{.BINARY}}.exe .
+
+  copy:assets:
+    cmds:
+      - cp -R Source/inspector {{.APPNAME}}/inspector
+      - cp -R Source/images {{.APPNAME}}/images
+      - cp Source/manifest.json {{.APPNAME}}/manifest.json
+
+  package:
+    cmds:
+      - task prepare
+      - task build:mac
+      - task build:windows
+      - task copy:assets
+      - mkdir -p Release
+      - |
+        if [ "$(uname)" = "Darwin" ]; then \
+          ./DistributionTool -b -i {{.APPNAME}} -o Release; \
+        elif [ "$(uname)" = "Linux" ]; then \
+          echo "Packaging is not supported on Linux (DistributionTool has no Linux binary)." >&2; exit 1; \
+        else \
+          ./DistributionTool.exe -b -i {{.APPNAME}} -o Release; \
+        fi
+
+  package:windows:
+    cmds:
+      - task prepare
+      - task build:windows
+      - task copy:assets
+      - mkdir -p Release
+      - ./DistributionTool.exe -b -i {{.APPNAME}} -o Release
+
+
