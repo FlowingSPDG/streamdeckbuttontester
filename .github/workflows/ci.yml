@@ -18,24 +18,17 @@ jobs:
         with:
           go-version: '1.24.x'
 
-      - name: Build (macOS binary)
+      - name: Install Task
         run: |
-          cd Source/code/cmd
-          GOOS=darwin GOARCH=amd64 go build -o ../../button_tester .
+          go install github.com/go-task/task/v3/cmd/task@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Copy assets
-        run: |
-          mkdir -p dev.flowingspdg.buttontester.sdPlugin
-          cp -R Source/inspector dev.flowingspdg.buttontester.sdPlugin/inspector
-          cp -R Source/images dev.flowingspdg.buttontester.sdPlugin/images
-          cp Source/manifest.json dev.flowingspdg.buttontester.sdPlugin/manifest.json
-          cp Source/button_tester dev.flowingspdg.buttontester.sdPlugin/button_tester
-
-      - name: Package (macOS)
+      - name: Package (macOS) via Taskfile
         run: |
           mkdir -p Release
           chmod +x DistributionTool || true
-          ./DistributionTool -b -i dev.flowingspdg.buttontester.sdPlugin -o Release
+          task --version
+          task package
 
       - name: Upload artifacts (macOS)
         uses: actions/upload-artifact@v4
@@ -56,26 +49,18 @@ jobs:
         with:
           go-version: '1.24.x'
 
-      - name: Build (Windows binary)
+      - name: Install Task
         shell: bash
         run: |
-          cd Source/code/cmd
-          GOOS=windows GOARCH=amd64 go build -o ../../button_tester.exe .
+          go install github.com/go-task/task/v3/cmd/task@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Copy assets
-        shell: bash
-        run: |
-          mkdir -p dev.flowingspdg.buttontester.sdPlugin
-          cp -R Source/inspector dev.flowingspdg.buttontester.sdPlugin/inspector
-          cp -R Source/images dev.flowingspdg.buttontester.sdPlugin/images
-          cp Source/manifest.json dev.flowingspdg.buttontester.sdPlugin/manifest.json
-          cp Source/button_tester.exe dev.flowingspdg.buttontester.sdPlugin/button_tester.exe
-
-      - name: Package (Windows)
+      - name: Package (Windows) via Taskfile
         shell: bash
         run: |
           mkdir -p Release
-          ./DistributionTool.exe -b -i dev.flowingspdg.buttontester.sdPlugin -o Release
+          task --version
+          task package:windows
 
       - name: Upload artifacts (Windows)
         uses: actions/upload-artifact@v4
