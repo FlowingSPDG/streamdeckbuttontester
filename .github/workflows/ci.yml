@@ -23,12 +23,19 @@ jobs:
           go install github.com/go-task/task/v3/cmd/task@latest
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Package (macOS) via Taskfile
+      - name: Stage plugin via Taskfile (macOS)
         run: |
-          mkdir -p Release
-          chmod +x DistributionTool || true
           task --version
-          task package
+          task prepare
+          task build:mac
+          task copy:assets
+          mkdir -p Release
+
+      - name: StreamDeck Distribution Tool (macOS)
+        uses: AdamCarballo/streamdeck-distribution-tool@v1
+        with:
+          input: dev.flowingspdg.buttontester.sdPlugin
+          output: Release
 
       - name: Upload artifacts (macOS)
         uses: actions/upload-artifact@v4
@@ -55,12 +62,20 @@ jobs:
           go install github.com/go-task/task/v3/cmd/task@latest
           echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
-      - name: Package (Windows) via Taskfile
+      - name: Stage plugin via Taskfile (Windows)
         shell: bash
         run: |
-          mkdir -p Release
           task --version
-          task package:windows
+          task prepare
+          task build:windows
+          task copy:assets
+          mkdir -p Release
+
+      - name: StreamDeck Distribution Tool (Windows)
+        uses: AdamCarballo/streamdeck-distribution-tool@v1
+        with:
+          input: dev.flowingspdg.buttontester.sdPlugin
+          output: Release
 
       - name: Upload artifacts (Windows)
         uses: actions/upload-artifact@v4
